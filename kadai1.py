@@ -20,7 +20,7 @@ def main():
         print(f"2進数: {to_binary(num)}")
         print(f"16進数: {to_hex(num)}")
     except ValueError:
-        print("数字じゃないです")
+        print("数字を入力してください")
 
 if __name__ == "__main__":
     main()
