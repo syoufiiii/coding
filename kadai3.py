@@ -10,24 +10,16 @@
 # なお、出力するファイルの出力先やファイル名はconfigファイルを参照するようにすること
 
 
-
 import json
 import csv
 import os
 import re
 
-# Configファイルから設定を読み込む
-CONFIG = {
-    "output_dir": "./output",
-    "json_file": "animals.json",
-    "csv_file": "animals.csv",
-    "xml_file": "animals.xml"
-}
+with open("config.json", "r", encoding="utf-8") as config_file:
+    CONFIG = json.load(config_file)
 
 def validate_english_name(name):
-    if re.fullmatch(r"[a-zA-Z]+", name):
-        return True
-    return False
+    return re.fullmatch(r"[a-zA-Z]+", name) is not None
 
 def save_as_json(data):
     path = os.path.join(CONFIG["output_dir"], CONFIG["json_file"])
@@ -38,8 +30,9 @@ def save_as_csv(data):
     path = os.path.join(CONFIG["output_dir"], CONFIG["csv_file"])
     with open(path, "w", encoding="utf-8", newline="") as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(data.keys())
-        writer.writerow(data.values())
+        writer.writerow(["英語", "日本語"])
+        for eng, jap in data.items():
+            writer.writerow([eng, jap])
 
 def save_as_xml(data):
     path = os.path.join(CONFIG["output_dir"], CONFIG["xml_file"])
@@ -50,9 +43,7 @@ def save_as_xml(data):
         xml_file.write("</Animals>\n")
 
 def main():
-    # 出力ディレクトリの作成
     os.makedirs(CONFIG["output_dir"], exist_ok=True)
-
     animals = {}
 
     while True:
@@ -67,7 +58,6 @@ def main():
         japanese_name = input("動物名（日本語）を入力してください: ")
         animals[english_name] = japanese_name
 
-    # ファイル出力
     save_as_json(animals)
     save_as_csv(animals)
     save_as_xml(animals)
